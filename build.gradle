@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (c) 2019 Sebastian Boegl
  *
@@ -34,8 +32,8 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id "com.jfrog.bintray" version "1.7.3"
-    id "nu.studer.plugindev" version "1.0.6"
+//    id "com.jfrog.bintray" version "1.7.3"
+//    id "nu.studer.plugindev" version "1.0.6"
     id "com.jfrog.artifactory" version "4.4.12"
     id 'org.unbroken-dome.test-sets' version '2.1.1'
 	id 'io.codearte.nexus-staging' version '0.21.2'
@@ -96,57 +94,57 @@ dependencies {
 
 group "io.github.fvarrui"
 // use semantic versioning (http://semver.org/)
-version "2.4.6"
+version "2.4.7"
 
 sourceCompatibility = JavaVersion.VERSION_1_6
 targetCompatibility = JavaVersion.VERSION_1_6
 
-plugindev {
-    pluginId 'edu.sc.seis.launch4j'
-    pluginName 'gradle-launch4j'
-    pluginImplementationClass 'edu.sc.seis.launch4j.Launch4jPlugin'
-    pluginDescription 'A gradle-plugin that uses launch4j to create windows .exe files for java applications.'
-    pluginLicenses 'Apache-2.0'
-    pluginTags 'gradle', 'launch4j', 'executable', 'wrapper'
-    authorId 'theboegl'
-    authorName 'Sebastian Bögl'
-    authorEmail 'info@sebastianboegl.de'
-    projectUrl 'https://github.com/TheBoegl/gradle-launch4j'
-    projectInceptionYear '2012'
-    pomConfiguration {
-        name project.name
-        description 'A gradle-plugin that uses launch4j to create windows .exe files for java applications.'
-        url 'https://github.com/fvarrui/gradle-launch4j/'
-        scm {
-            url 'https://github.com/fvarrui/gradle-launch4j/'
-            connection 'scm:git:git://github.com/fvarrui/gradle-launch4j.git'
-            developerConnection 'scm:git:git@github.com:fvarrui/gradle-launch4j.git'
-        }
-        licenses {
-            license {
-                name 'Apache License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution 'repo'
-            }
-        }
-        developers {
-            developer {
-                id 'theboegl'
-                name 'Sebastian Bögl'
-                email 'info@sebastianboegl.de'
-            }
-        }
-        issueManagement {
-            system 'github'
-            url 'https://github.com/TheBoegl/gradle-launch4j/issues'
-        }
-    }
-    done() // do not omit this
-}
+//plugindev {
+//    pluginId 'edu.sc.seis.launch4j'
+//    pluginName 'gradle-launch4j'
+//    pluginImplementationClass 'edu.sc.seis.launch4j.Launch4jPlugin'
+//    pluginDescription 'A gradle-plugin that uses launch4j to create windows .exe files for java applications.'
+//    pluginLicenses 'Apache-2.0'
+//    pluginTags 'gradle', 'launch4j', 'executable', 'wrapper'
+//    authorId 'theboegl'
+//    authorName 'Sebastian Bögl'
+//    authorEmail 'info@sebastianboegl.de'
+//    projectUrl 'https://github.com/TheBoegl/gradle-launch4j'
+//    projectInceptionYear '2012'
+//    pomConfiguration {
+//        name project.name
+//        description 'A gradle-plugin that uses launch4j to create windows .exe files for java applications.'
+//        url 'https://github.com/fvarrui/gradle-launch4j/'
+//        scm {
+//            url 'https://github.com/fvarrui/gradle-launch4j/'
+//            connection 'scm:git:git://github.com/fvarrui/gradle-launch4j.git'
+//            developerConnection 'scm:git:git@github.com:fvarrui/gradle-launch4j.git'
+//        }
+//        licenses {
+//            license {
+//                name 'Apache License, Version 2.0'
+//                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                distribution 'repo'
+//            }
+//        }
+//        developers {
+//            developer {
+//                id 'theboegl'
+//                name 'Sebastian Bögl'
+//                email 'info@sebastianboegl.de'
+//            }
+//        }
+//        issueManagement {
+//            system 'github'
+//            url 'https://github.com/TheBoegl/gradle-launch4j/issues'
+//        }
+//    }
+//    done() // do not omit this
+//}
 
 gradlePlugin {
     plugins {
-        launch4j {
+        gradleLaunch4j {
             id = 'edu.sc.seis.launch4j'
             implementationClass = 'edu.sc.seis.launch4j.Launch4jPlugin'
         }
@@ -158,22 +156,21 @@ pluginBundle {
     vcsUrl = 'https://github.com/TheBoegl/gradle-launch4j'
     description = 'A gradle-plugin to create windows executables with launch4j for Java application.'
     tags = ['launch4j', 'executable', 'wrapper']
-
     plugins {
-        launch4j {
+        gradleLaunch4j {
             displayName = 'launch4j gradle plugin'
         }
     }
 }
 
-bintray {
-    pkg {
-        repo = 'gradle-plugins'
-        version {
-            vcsTag = "v${project.version}"
-        }
-    }
-}
+//bintray {
+//    pkg {
+//        repo = 'gradle-plugins'
+//        version {
+//            vcsTag = "v${project.version}"
+//        }
+//    }
+//}
 
 publishPlugins.dependsOn build
 
@@ -215,6 +212,14 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from(components.java)
+		}
+	}
+}
 
 if (project.hasProperty('release')) {
 	
@@ -291,4 +296,3 @@ nexusStaging {
 	username = project.findProperty('ossrhUser') ?: ''
 	password = project.findProperty('ossrhPassword') ?: ''
 }
-	
