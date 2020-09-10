@@ -17,6 +17,15 @@
  *
  */
 
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+	}
+}
+
 plugins {
     id "com.gradle.plugin-publish" version "0.10.1"
     id 'java-gradle-plugin'
@@ -29,6 +38,7 @@ plugins {
     id "nu.studer.plugindev" version "1.0.6"
     id "com.jfrog.artifactory" version "4.4.12"
     id 'org.unbroken-dome.test-sets' version '2.1.1'
+	id 'io.codearte.nexus-staging' version '0.21.2'
 }
 
 // Write the plugin's classpath to a file to share with the tests.
@@ -55,9 +65,9 @@ ext {
 }
 
 
-testSets {
-    backwardsCompatibiltyTest
-}
+//testSets {
+//    backwardsCompatibiltyTest
+//}
 
 dependencies {
     implementation gradleApi()
@@ -78,18 +88,18 @@ dependencies {
         exclude module: 'junit-dep'
         exclude module: 'groovy-all'
     }
-    backwardsCompatibiltyTestImplementation sourceSets.test.output
+//    backwardsCompatibiltyTestImplementation sourceSets.test.output
 
     // Add the classpath file to the test runtime classpath.
-    testRuntime files(createClasspathManifest)
+//    testRuntime files(createClasspathManifest)
 }
 
-group "edu.sc.seis.gradle"
+group "io.github.fvarrui"
 // use semantic versioning (http://semver.org/)
 version "2.4.6"
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
 
 plugindev {
     pluginId 'edu.sc.seis.launch4j'
@@ -99,18 +109,18 @@ plugindev {
     pluginLicenses 'Apache-2.0'
     pluginTags 'gradle', 'launch4j', 'executable', 'wrapper'
     authorId 'theboegl'
-    authorName 'Sebastian BÃ¶gl'
+    authorName 'Sebastian Bögl'
     authorEmail 'info@sebastianboegl.de'
     projectUrl 'https://github.com/TheBoegl/gradle-launch4j'
     projectInceptionYear '2012'
     pomConfiguration {
         name project.name
         description 'A gradle-plugin that uses launch4j to create windows .exe files for java applications.'
-        url 'https://github.com/TheBoegl/gradle-launch4j/'
+        url 'https://github.com/fvarrui/gradle-launch4j/'
         scm {
-            url 'https://github.com/TheBoegl/gradle-launch4j/'
-            connection 'scm:git:git://github.com/TheBoegl/gradle-launch4j.git'
-            developerConnection 'scm:git:git@github.com:TheBoegl/gradle-launch4j.git'
+            url 'https://github.com/fvarrui/gradle-launch4j/'
+            connection 'scm:git:git://github.com/fvarrui/gradle-launch4j.git'
+            developerConnection 'scm:git:git@github.com:fvarrui/gradle-launch4j.git'
         }
         licenses {
             license {
@@ -122,7 +132,7 @@ plugindev {
         developers {
             developer {
                 id 'theboegl'
-                name 'Sebastian BÃ¶gl'
+                name 'Sebastian Bögl'
                 email 'info@sebastianboegl.de'
             }
         }
@@ -205,3 +215,52 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+if (project.hasProperty('release')) {
+	
+	task javadocJar(type: Jar) {
+		classifier = 'javadoc'
+		from javadoc
+	}
+	
+	task sourcesJar(type: Jar) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+	
+	artifacts {
+		archives javadocJar, sourcesJar
+	}
+
+	allprojects {
+		apply plugin: 'signing'
+		apply plugin: 'maven'
+
+		// Signature of artifacts
+		signing {
+			sign configurations.archives
+		}
+
+		// OSSRH publication
+		uploadArchives {
+			repositories {
+				mavenDeployer {
+					// POM signature
+					beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+					// Target repository
+					repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+						authentication(userName: ossrhUser, password: ossrhPassword)
+					}
+				}
+			}
+		}
+
+	}
+	
+}
+	
+nexusStaging {
+	username = project.findProperty('ossrhUser') ?: ''
+	password = project.findProperty('ossrhPassword') ?: ''
+}
+	
