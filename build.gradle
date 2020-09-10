@@ -223,13 +223,13 @@ if (project.hasProperty('release')) {
 		from javadoc
 	}
 	
-	task sourcesJar(type: Jar) {
+	task sources2Jar(type: Jar) {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
 	
 	artifacts {
-		archives javadocJar, sourcesJar
+		archives javadocJar, sources2Jar
 	}
 
 	allprojects {
@@ -250,6 +250,34 @@ if (project.hasProperty('release')) {
 					// Target repository
 					repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
 						authentication(userName: ossrhUser, password: ossrhPassword)
+					}
+					pom.project {
+						name project.name
+						description 'A gradle-plugin that uses launch4j to create windows .exe files for java applications.'
+						url 'https://github.com/fvarrui/gradle-launch4j/'
+						scm {
+							url 'https://github.com/fvarrui/gradle-launch4j/'
+							connection 'scm:git:git://github.com/fvarrui/gradle-launch4j.git'
+							developerConnection 'scm:git:git@github.com:fvarrui/gradle-launch4j.git'
+						}
+						licenses {
+							license {
+								name 'Apache License, Version 2.0'
+								url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+								distribution 'repo'
+							}
+						}
+						developers {
+							developer {
+								id 'theboegl'
+								name 'Sebastian Bögl'
+								email 'info@sebastianboegl.de'
+							}
+						}
+						issueManagement {
+							system 'github'
+							url 'https://github.com/TheBoegl/gradle-launch4j/issues'
+						}
 					}
 				}
 			}
