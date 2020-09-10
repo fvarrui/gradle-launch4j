@@ -88,8 +88,8 @@ group "edu.sc.seis.gradle"
 // use semantic versioning (http://semver.org/)
 version "2.4.6"
 
-sourceCompatibility = JavaVersion.VERSION_1_6
-targetCompatibility = JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 plugindev {
     pluginId 'edu.sc.seis.launch4j'
@@ -167,28 +167,28 @@ bintray {
 
 publishPlugins.dependsOn build
 
-if (!project.hasProperty("artifactory_ojo_user")) {
-    ext.artifactory_ojo_user = "user"
-    ext.artifactory_ojo_password = "password"
-}
+//if (!project.hasProperty("artifactory_ojo_user")) {
+//    ext.artifactory_ojo_user = "user"
+//    ext.artifactory_ojo_password = "password"
+//}
 
-artifactory {
-    contextUrl = "https://oss.jfrog.org/artifactory"
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = "${artifactory_ojo_user}"
-            password = "${artifactory_ojo_password}"
-        }
-        defaults {
-            publications 'plugin'
-        }
-    }
-}
+//artifactory {
+//    contextUrl = "https://oss.jfrog.org/artifactory"
+//    publish {
+//        repository {
+//            repoKey = 'oss-snapshot-local'
+//            username = "${artifactory_ojo_user}"
+//            password = "${artifactory_ojo_password}"
+//        }
+//        defaults {
+//            publications 'plugin'
+//        }
+//    }
+//}
 //createReleaseTag.dependsOn publish
 
 wrapper {
-    gradleVersion = '5.4.1'
+    gradleVersion = '6.0'
     distributionType = Wrapper.DistributionType.ALL
 }
 
